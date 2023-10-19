@@ -1,40 +1,131 @@
-from flask import Flask, render_template, request
-from projects import Project  # Assuming the Project class is in a file named projects.py
+###############################################################################
+#                         IMPORT REQUIRED LIBRARIES/MODULES
+###############################################################################
+# 1. The FLASK framework (the webserver)
+from flask import Flask
 
-app = Flask(__name__)
+# 2. For opening and read the HTML file and showing them as the webpage
+from flask import render_template
 
+# 3. From the flask library import the request class.
+# Allows us to get information from the website URL
+from flask import request
+
+# 4. From the objects.py containing our classes for this application, only import the Movie class
+from objects import Movie
+
+# 5. Import the sqlite library
+# SQLITE is NOT imported here. I do not have any SQL in this file
+# import sqlite3
+
+# 6. Instantiate the Flask() class and called it app
+app=Flask(__name__)
+
+###############################################################################
+#                         CREATE YOUR WEBPAGE ROUTES
+###############################################################################
+
+# -----------------------------------------------------------------------------
+# A) Create your home page.  Let's call the page "index"
+# -----------------------------------------------------------------------------
+
+#   Start with a decorator with no name. That way when they only type in your server's name
+#   It will got to this page
 @app.route("/")
-@app.route("/index")
+
+#   Let's also add the name "index" since that is a common name for a website home page
+@app.route("/index")    # Decorator - Now
+
+#   Define what should happen when visiting this page by using a function called index()
 def index():
-    projectList = Project.getAllProjects()
-    return render_template('index.html', message=projectList)
+    # A1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+    mList=Movie.getAllMovies()
 
-@app.route("/delete", methods=["GET", "POST"])
+    #Return the template index.html but pass it the list of movies
+    # stored in the variable mList
+    return render_template('index.html',message=mList )
+
+
+
+# -----------------------------------------------------------------------------
+# B) Create a page to DELETE records
+#------------------------------------------------------------------------------
+
+# Create a decorator with the route/path "delete".
+# IMPORTANT: THIS IS A FORM!!!
+# Allowable Actions:
+#   GET:  This is when you first come to the page
+#   POST: This is when you SUBMIT the information that you filled out in the form
+@app.route("/delete", methods=["GET","POST"]) # Decorator - Now
+
+#   Define what should happen when visiting this page by using a function called delete
 def delete():
-    if request.method == "GET":
-        projectList = Project.getAllProjects()
-        return render_template('delete.html', message=projectList)
-    elif request.method == "POST":
-        title = request.form.get("projtitle", 0)
-        Project.delProjects_Title_DB(title)
-        projectList = Project.getAllProjects()
-        return render_template('delete.html', message=projectList)
-    else:
-        return render_template('delete.html', message="Something did not work.")
+    if request.method == "GET":  # When you first visit the page
 
-@app.route("/add", methods=["GET", "POST"])
-def add():
-    if request.method == "GET":
-        projectList = Project.getAllProjects()
-        return render_template('add.html', message=projectList)
-    elif request.method == "POST":
-        title = request.form.get("projtitle", 0)
-        description = request.form.get("projdesc", 0)
-        imageFileName = request.form.get("ImageFileName", 0)
-        Project.saveProjectDB(title, description, imageFileName)
-        projectList = Project.getAllProjects()
-        return render_template('add.html', message=projectList)
+        # B1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+        mList=Movie.getAllMovies()
+        return render_template('delete.html',message=mList)
+
+    elif request.method == "POST": # When you fill out the form and click SUBMIT
+        # Get the value from the form object called "movtitle" (it is a textbox)
+        movtitle = request.form.get("movtitle", 0)
+
+        # B1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+        mList=Movie.getAllMovies()
+        Movie.delMovies_Title_DB(movtitle)
+
+        # B1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+        mList=Movie.getAllMovies()
+
+        #Return the template index.html but pass it the list of movies
+        # stored in the variable mList
+        return render_template('delete.html',message=mList )
+
     else:
-        return render_template('add.html', message='Something went wrong.')
+        # How could it have not been a GET or POST? Hmm. Should have been one of them.
+        return render_template('delete.html',message="Something did not work.")
+
+
+#------------------------------------------------------------------------------------
+# C) Create a page to INSERT records
+#------------------------------------------------------------------------------------
+
+@app.route("/add", methods=["GET","POST"]) # Decorator - Now
+def add():
+    if request.method == "GET":  # When you first visit the page
+
+        # C1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+        mList=Movie.getAllMovies()
+        return render_template('add.html',message=mList)
+
+    elif request.method == "POST": # When you fill out the form and click SUBMIT
+        # C1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+        mList=Movie.getAllMovies()
+
+        # Get the value from the form object called "movtitle" (it is a textbox)
+        title = request.form.get("movtitle", 0)
+
+        # Get the value from the form object called "movyear" (it is a textbox)
+        # This is an INTEGER. Quick, change it from TEXT to INTEGER using int() function
+        year = int(request.form.get("movyear", 0))
+
+        # Get the value from the form object called "movtitle" (it is a textbox)
+        ImageName = request.form.get("ImageName", 0)
+
+        # Run the function called saveMovieDB passing the method the title of the movie
+        #   and the year the movie was release
+        Movie.saveMovieDB(title, year, ImageName)
+
+        # C1) Run a CLASS method called getAllMovies().  Instaniation is not needed.
+        mList=Movie.getAllMovies()
+
+        #Return the template index.html but pass it the list of movies
+        # stored in the variable mList
+        return render_template('add.html',message=mList )
+
+    else:
+        # How could it have not been a GET or POST? I have no idea how that could have happened.
+        return render_template('add.html',message='Something went wrong.')
+
 
 app.run(debug=True)

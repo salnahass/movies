@@ -18,14 +18,14 @@
 {% block body %}
 
 <!-- Add text that will be static for the INDEX page-->
-<h1>Welcome to Sami's Project Application</h1>
+<h1>Welcome to the Movie Web Application!!!</h1>
 
 <p>
-    You can view, insert and delete projects using this application.
+    You can view, insert and delete movies using this application.
 </p>
 
 <!-- Create an Ordered List - The OL tag is static and we only need one-->
-    <H2><u>Ordered List of Projects</u></H2>
+    <H2><u>Ordered List of Movies</u></H2>
     <OL>
         <!-- The LI tag is NOT static.  We need one for each row in the datanase -->
         <!-- Therefore we need a Jinja loop to iterate through all of the movie rows -->
@@ -33,7 +33,7 @@
         <!-- m will represent each dictionary entry made up of a Name key and a Year key -->
         {% for m in message %}
             <LI> <!-- the double curly braces must be together with no spaces-->
-                 {{m.Title}},  {{m.Description}}
+                 {{m.Title}},  {{m.Year}}
             </LI>
         {% endfor %}
     </OL>
@@ -42,11 +42,12 @@
 
     <!-- A TABLE VERSION INSTEAD OF A ORDERED LIST VERSION -->
     <!-- REDUNDENT BUT I WANTE TO SHOW HOW TO FORMAT THE RESULTS DIFFERENTLY -->
-    <H2><u>Table List of Projects</u></H2>
+    <H2><u>Table List of Movies (an excuse to use more Jinja</u></H2>
     <TABLE style="border-collapse: collapse;">
         <TR style="background-color: #D6EEEE;">
-            <TH style="padding: 5px; border: solid 1px #777;">Title</TD>
-            <TH style="padding: 5px; border: solid 1px #777;">Description</TD>
+            <TH style="padding: 5px; border: solid 1px #777;">Movie Title</TD>
+            <TH style="padding: 5px; border: solid 1px #777;">Date Release</TD>
+            <TH style="padding: 5px; border: solid 1px #777;">Cover</TD>
        </TH>
        <!-- EXAMPLES OF THE JINJA LANGUAGE FOR LOOPS-->
         {% for m in message %}
@@ -54,7 +55,7 @@
                 <TD style="padding: 5px; border: solid 1px #777;">{{m.Title}}</TD>
                 <TD style="padding: 5px; border: solid 1px #777;">{{m.Year}}</TD>
                 <TD style="padding: 5px; border: solid 1px #777;">
-                    <img src="static/images/{{m.capstone.png}}" />
+                    <img src="static/images/{{m.Image}}" />
                 </TD>
             </TR>
         {% endfor %}
