@@ -1,0 +1,40 @@
+<!-- CREATE CHILD TEMPLATE FOR "DELETE" PAGE (aka Delete Record Page) -->
+<!-- Inherit the Parent page first -->
+{% extends "layout.html" %}
+
+<!-- Replace the "placeholder" called head in the parent template with the following -->
+{% block head %}
+    <title>Delete Record Page</title>
+{% endblock %}
+
+{% block body %}
+
+    <form action="/delete" method="post">
+        <!-- START Specific to Movie DELETE -->
+        Delete which movie?
+
+        <!-- Name this TEXTBOX "movname"-->
+        <input autocomplete="off" autofocus name="movtitle" placeholder="Movie Title" type="text">
+        <br>
+
+        <!-- Add a Submit button-->
+        <input type="submit">
+        <!-- END Specific to Movie DELETE -->
+
+
+        <H2><u>Ordered List of Movies</u></H2>
+        <OL>
+            <!-- The LI tag is NOT static.  We need one for each row in the datanase -->
+            <!-- Therefore we need a Jinja loop to iterate through all of the movie rows -->
+            <!-- message contains a LIST of Dictionaries -->
+            <!-- m will represent each dictionary entry made up of a Name key and a Year key -->
+            {% for m in message %}
+                <LI> <!-- the double curly braces must be together with no spaces-->
+                     {{m.Title}},  {{m.Year}}
+                </LI>
+            {% endfor %}
+        </OL>
+
+    </form>
+
+ {% endblock %}
